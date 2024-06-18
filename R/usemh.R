@@ -16,13 +16,19 @@ use_mh <- function(open = rlang::is_interactive()) {
         tempd <- .gen_empty_dir()
         x <- quarto::quarto_create_project(name = Package, dir = tempd, quiet = TRUE, no_prompt = TRUE)
         quarto_proj_basepath <- file.path(tempd, Package)
+        ## copy some rubbish qmd so that it will generate R runtime.txt
+        file.copy(system.file("templates", "rubbish.qmd", package = "usemh"), quarto_proj_basepath)
+        file.copy("install.R", quarto_proj_basepath)
+        ## Super hacky
         system(paste0("cd ", quarto_proj_basepath, "; quarto use binder --no-prompt"))
+        
         ## needed files
         usethis::use_template("quarto.yaml", "_quarto.yml", data = list("Package" = Package), package = "usemh")        
-        x <- file.copy(file.path(tempd, Package, "postBuild"), ".")
-        x <- file.copy(file.path(tempd, Package, "apt.txt"), ".")
-        x <- file.copy(file.path(tempd, Package, ".jupyter"), ".", recursive = TRUE)
-        usethis::use_build_ignore(c("postBuild", "_quarto.yml", "apt.txt", ".jupyter", ".quarto"))
+        .copy_if_ignore("postBuild", quarto_proj_basepath)
+        .copy_if_ignore("apt.txt", quarto_proj_basepath)
+        .copy_if_ignore("runtime.txt", quarto_proj_basepath)
+        .copy_if_ignore(".jupyter", quarto_proj_basepath)
+        usethis::use_build_ignore(c("_quarto.yml", ".quarto"))
     }
     ## Hacky>
     usethis::use_build_ignore("^methodshub", escape = FALSE)
@@ -70,6 +76,15 @@ zap_mh <- function() {
         }
     }
     return(tempd)   
+}
+
+.copy_if_ignore <- function(file, quarto_proj_basepath) {    
+    if (file.exists(file.path(quarto_proj_basepath, file))) {
+        x <- file.copy(file.path(quarto_proj_basepath, file), ".", recursive = TRUE)
+        usethis::use_build_ignore(file)
+        return(invisible(TRUE))
+    }
+    return(invisible(FALSE))
 }
 
 .convert_doi_md <- function(doi) {

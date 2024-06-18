@@ -6,3 +6,6 @@
 ^apt\.txt$
 ^\.jupyter$
 ^methodshub
+^CITATION\.cff$
+^\.quarto$
+^runtime\.txt$

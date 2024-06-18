@@ -1,0 +1,7 @@
+---
+title: Histogram
+---
+
+```{r}
+hist(rnorm(100))
+```
