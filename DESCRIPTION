@@ -16,4 +16,5 @@ Imports:
     cffr,
     quarto,
     rlang,
-    usethis
+    usethis,
+    withr
