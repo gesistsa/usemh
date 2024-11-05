@@ -2,8 +2,8 @@ Package: usemh
 Title: Because One Readme Is Not Enough
 Version: 0.0.1
 Authors@R: 
-    person("Chung-hong", "Chan", , "chainsawtiney@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-6232-7530"))
+	   c(person("Chung-hong", "Chan", , "chainsawtiney@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6232-7530")),
+	     person("David", "Schoch", , "david@schochastics.net", role = c("aut"), comment = c(ORCID = "0000-0003-2952-4812")))
 Description: Automatically generate the boilderplate for a standard reusable R package to be submitted as Method Entry on MH, in the 'usethis' style. It is for standard R package (probably already on CRAN), not partial R code.
 License: EUPL
 Encoding: UTF-8
