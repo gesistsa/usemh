@@ -17,14 +17,14 @@ You can install the development version of `usemh` like so:
 ## Don't install this if you don't know how to do so.
 ```
 
-## Example
+## Method
 
 Hopefully, it will generate all the boilerplate files for the MH
-submission.
+submission of your R package.
 
 ``` r
 library(usemh)
-use_mh()
+use_mh_method()
 ```
 
 By default, it will open up the file `methodshub.qmd` automatically (use
@@ -49,7 +49,7 @@ additional ubuntu packages. Similarly, if the rendering of
 When submitting the R package to MH, please put `methodshub.qmd` in the
 “File” field of the submission form.
 
-## Additional information
+### Additional information
 
   - For the initial `methodshub.qmd`, information is collected from
     `DESCRIPTION`. Don’t ask me / us the why question about those
@@ -59,4 +59,19 @@ When submitting the R package to MH, please put `methodshub.qmd` in the
   - This package is designed to make the boilerplate files affecting
     neither the existing `README.md` nor the usual `R CMD check`. All of
     boilerplate files added are tracked in `.RBuildignore`.
-  - Dig into the source code to study how to undo `usemh::use_mh()`.
+  - Dig into the source code to study how to undo
+    `usemh::use_mh_method()`.
+
+## Tutorial
+
+To bootstrap a tutorial
+
+``` r
+use_mh_tutorial_template(title = "A Tutorial on doing everything with LLMs")
+```
+
+To add files for Binder compatibility
+
+``` r
+use_mh_tutorial_utils()
+```
