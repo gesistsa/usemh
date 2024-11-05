@@ -2,4 +2,4 @@ project:
   title: {{Package}}
   type: default
   render:
-    - methodshub.qmd
+    - {{file}}

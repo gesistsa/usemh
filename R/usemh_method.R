@@ -1,6 +1,6 @@
 #' @export
-use_mh <- function(open = rlang::is_interactive()) {
-    usethis:::check_is_package("use_mh()")
+use_mh_method <- function(open = rlang::is_interactive()) {
+    usethis:::check_is_package("use_mh_method()")
     ## Generate cff
     cffr::cff_write(cffr::cff_create()) ## auto add to .Rbuildignore
     usethis::use_build_ignore("CITATION.cff")
@@ -27,7 +27,7 @@ use_mh <- function(open = rlang::is_interactive()) {
             .copy_if_and_ignore("runtime.txt", quarto_proj_basepath, active_dir)
             .copy_if_and_ignore(".jupyter", quarto_proj_basepath, active_dir)
         })
-        usethis::use_template("quarto.yaml", "_quarto.yml", data = list("Package" = Package), package = "usemh")
+        usethis::use_template("quarto.yaml", "_quarto.yml", data = list("Package" = Package, "file" = "methodshub.qmd"), package = "usemh")
         usethis::use_build_ignore(c("_quarto.yml", ".quarto"))
         usethis::use_build_ignore("^methodshub", escape = FALSE)
         bug_reports <- desc$get("BugReports")
@@ -37,13 +37,16 @@ use_mh <- function(open = rlang::is_interactive()) {
             bug_reports <- paste0("Issue Tracker: [", bug_reports, "](", bug_reports, ")")
         }
         usethis::use_template("methodshub.qmd",
-                              data = list("Package" = Package,
-                                          "Title" = desc$get("Title"),
-                                          "Description" = .fix_dois(desc$get("Description")),
-                                          "Maintainer" = desc$get_maintainer(),
-                                          "BugReports" = bug_reports),
-                              ignore = FALSE, package = "usemh",
-                              open = open)
+            data = list(
+                "Package" = Package,
+                "Title" = desc$get("Title"),
+                "Description" = .fix_dois(desc$get("Description")),
+                "Maintainer" = desc$get_maintainer(),
+                "BugReports" = bug_reports
+            ),
+            ignore = FALSE, package = "usemh",
+            open = open
+        )
     }
 }
 
@@ -88,4 +91,3 @@ zap_mh <- function() {
     }
     return(description)
 }
-
