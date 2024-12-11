@@ -58,6 +58,7 @@ use_mh_tutorial_utils <- function(title = NULL, file = NULL, overwrite = TRUE) {
   if (!file.exists("install.R") || isTRUE(overwrite)) {
     .create_install_R()
   }
+  .fix_postBuild()
 }
 
 .create_install_R <- function(path = ".") {
@@ -66,4 +67,16 @@ use_mh_tutorial_utils <- function(title = NULL, file = NULL, overwrite = TRUE) {
   reqs <- gsub("apt-get install -y ", "", reqs)
   writeLines(reqs, "apt.txt")
   writeLines(paste0('install.packages("', deps, '")'), "install.R")
+  return(invisible(NULL))
+}
+
+# see https://github.com/schochastics/MH_netVizR/issues/2
+.fix_postBuild <- function(path = ".") {
+  file <- file.path(path, "postBuild")
+  if (file.exists(file)) {
+    txt <- readLines(file)
+    txt <- gsub("#!/usr/bin/env bash -v", "#!/bin/bash -v", txt)
+    writeLines(txt, file)
+  }
+  return(invisible(NULL))
 }
