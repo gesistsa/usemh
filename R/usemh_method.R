@@ -80,7 +80,7 @@ zap_mh <- function() {
 .convert_doi_md <- function(doi) {
     doi <- stringr::str_replace(doi, "^\\<doi:", "")
     doi <- stringr::str_replace(doi, "\\>$", "")
-    paste0("[<doi:", doi, ">](https://doi.org/", doi, ")")
+    paste0("[doi:", doi, "](https://doi.org/", doi, ")")
 }
 
 .fix_dois <- function(description) {
