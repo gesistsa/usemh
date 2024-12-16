@@ -40,7 +40,7 @@ use_mh_method <- function(open = rlang::is_interactive()) {
             data = list(
                 "Package" = Package,
                 "Title" = desc$get("Title"),
-                "Description" = .fix_dois(desc$get("Description")),
+                "Description" = .fix_cran_shorthands(desc$get("Description")),
                 "Maintainer" = desc$get_maintainer(),
                 "BugReports" = bug_reports
             ),
@@ -77,17 +77,21 @@ zap_mh <- function() {
     return(invisible(FALSE))
 }
 
-.convert_doi_md <- function(doi) {
-    doi <- stringr::str_replace(doi, "^\\<doi:", "")
-    doi <- stringr::str_replace(doi, "\\>$", "")
-    paste0("[doi:", doi, "](https://doi.org/", doi, ")")
+.convert_md <- function(x, slug = "doi" , url_prefix = "https://doi.org/") {
+    x <- stringr::str_replace(x, paste0("^\\<", slug, ":"), "")
+    x <- stringr::str_replace(x, "\\>$", "")
+    paste0("[", slug, ":", x, "](", url_prefix, x, ")")
 }
 
-.fix_dois <- function(description) {
+.fix_cran_shorthands <- function(description) {
     dois <- as.character(stringr::str_extract_all(description, "\\<doi:[0-9a-zA-Z\\-\\./]+\\>", simplify = TRUE))
 
     for (doi in dois) {
-        description <- stringr::str_replace(description, stringr::fixed(doi), .convert_doi_md(doi))
+        description <- stringr::str_replace(description, stringr::fixed(doi), .convert_md(doi))
     }
+    arxivs <- as.character(stringr::str_extract_all(description, "\\<arXiv:[0-9a-zA-Z\\-\\./]+\\>", simplify = TRUE))
+    for (arxiv in arxivs) {
+        description <- stringr::str_replace(description, stringr::fixed(arxiv), .convert_md(arxiv, "arXiv", "https://arxiv.org/abs/"))
+    }    
     return(description)
 }
