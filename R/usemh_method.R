@@ -14,11 +14,7 @@ use_mh_method <- function(open = rlang::is_interactive(), config_dir = c(".binde
     ## Capture the current postBuild in a temp. directory
     ## Not until this is fixed: quarto-dev/quarto-cli#9313
     active_dir <- getwd()
-    resolved_config_dir <- normalizePath(file.path(active_dir, config_dir), mustWork = FALSE)
     config_dot <- config_dir == "." ## quarto default
-    if (!config_dot && !dir.exists(resolved_config_dir)) {
-        dir.create(resolved_config_dir)
-    }
     usethis::use_template("install.R", data = list("Package" = Package), ignore = TRUE, package = "usemh")
     withr::with_tempdir({
         quarto_proj_basepath <- file.path(getwd(), Package)
@@ -35,14 +31,7 @@ use_mh_method <- function(open = rlang::is_interactive(), config_dir = c(".binde
         .copy_if_and_ignore("apt.txt", quarto_proj_basepath, active_dir, config_dot)
         .copy_if_and_ignore("runtime.txt", quarto_proj_basepath, active_dir, config_dot)
         .copy_if_and_ignore(".jupyter", quarto_proj_basepath, active_dir, config_dot)
-        if (!config_dot) {
-            generated_config_files <- Filter(file.exists,
-                                             file.path(active_dir, c("install.R", "postBuild", "apt.txt", "runtime.txt", ".jupyter")))
-            file.copy(from = generated_config_files,
-                      to = resolved_config_dir, recursive = TRUE)
-            unlink(generated_config_files, recursive = TRUE)
-            usethis::use_build_ignore(config_dir)
-        }
+        .sweep_config_files(config_dir, active_dir)
     })
     usethis::use_template("quarto.yaml", "_quarto.yml", data = list("Package" = Package, "file" = "methodshub.qmd"), package = "usemh")
     usethis::use_build_ignore(c("_quarto.yml", ".quarto"))
@@ -96,6 +85,26 @@ zap_mh <- function() {
     }
     return(invisible(FALSE))
 }
+
+.sweep_config_files <- function(config_dir, active_dir, ignore = TRUE) {
+    ## sweep binder configuration files to config_dir, see #15
+    config_dot <- config_dir == "." ## quarto default
+    if (!config_dot) {
+        resolved_config_dir <- normalizePath(file.path(active_dir, config_dir), mustWork = FALSE)            
+        if (!config_dot && !dir.exists(resolved_config_dir)) {
+            dir.create(resolved_config_dir)
+        }
+        generated_config_files <- Filter(file.exists,
+                                         file.path(active_dir, c("install.R", "postBuild", "apt.txt", "runtime.txt", ".jupyter")))
+        file.copy(from = generated_config_files,
+                  to = resolved_config_dir, recursive = TRUE)
+        unlink(generated_config_files, recursive = TRUE)
+        if (ignore) {
+            usethis::use_build_ignore(config_dir)
+        }
+    }
+}
+
 
 .convert_md <- function(x, slug = "doi" , url_prefix = "https://doi.org/") {
     x <- stringr::str_replace(x, paste0("^\\<", slug, ":"), "")

@@ -25,10 +25,11 @@ use_mh_tutorial_template <- function(title = "tutorial", dir = NULL, file = "ind
 }
 
 #' @export
-use_mh_tutorial_utils <- function(title = NULL, file = NULL, overwrite = TRUE) {
+use_mh_tutorial_utils <- function(title = NULL, file = NULL, overwrite = TRUE, config_dir = c(".binder", "binder", ".")) {
   if (!quarto::is_using_quarto()) {
     rlang::abort("no tutorial (qmd file) found in current directory.")
   }
+  config_dir <- match.arg(config_dir)
   if (is.null(file)) {
     qmd_files <- list.files(pattern = "*qmd")
     if (length(qmd_files) > 1) {
@@ -54,11 +55,13 @@ use_mh_tutorial_utils <- function(title = NULL, file = NULL, overwrite = TRUE) {
   if (!file.exists(notebook) || isTRUE(overwrite)) {
     system(paste0("quarto convert ", file, " --output ", notebook)) # TODO: Error handling
   }
+  
   quarto:::quarto_use(args = c("binder", "--no-prompt"))
   if (!file.exists("install.R") || isTRUE(overwrite)) {
     .create_install_R()
   }
   .fix_postBuild()
+  .sweep_config_files(config_dir, getwd(), FALSE)
 }
 
 .create_install_R <- function(path = ".") {
