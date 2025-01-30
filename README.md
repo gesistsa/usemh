@@ -36,7 +36,8 @@ all the boilerplate files, namely:
 2.  All the files for (my)Binder integration, e.g. `postBuild`,
     `install.R`, `apt.txt`, and `runtime.txt`, `install.R`, see the
     [tutorial preparation guide on
-    this](https://github.com/gesiscss/mh_tutorial?tab=readme-ov-file#binder-compatibility).
+    this](https://github.com/GESIS-Methods-Hub/guidelines-for-tutorials).
+    By default, these files are located in `.binder`.
 3.  Initialize a Quarto project (`_quarto.yml`) and `methodshub.qmd` to
     act as the “README” for the submission
 
