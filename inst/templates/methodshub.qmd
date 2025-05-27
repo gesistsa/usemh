@@ -4,6 +4,11 @@ format:
   html:
     embed-resources: true
   gfm: default
+jupyter:
+  kernelspec:
+    name: "ir"
+    language: "R"
+    display_name: "R"
 ---
 
 ## Description

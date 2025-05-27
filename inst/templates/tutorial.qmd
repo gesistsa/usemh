@@ -20,6 +20,11 @@ csl: apa.csl
 format:
   html: default
   ipynb: default
+jupyter:
+  kernelspec:
+    name: "ir"
+    language: "R"
+    display_name: "R"
 ---
 
 ```{r}
